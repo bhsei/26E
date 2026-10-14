@@ -1,4 +1,4 @@
-# de_glitch
+# DeGlitch
 
 A new Flutter project.
 
