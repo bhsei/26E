@@ -1,19 +1,14 @@
-import 'package:flutter/material.dart';
-import 'controllers/super_mobile_router/super_mobile_router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/widgets.dart';
+import 'auth/auth_checker.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'DēGlitch',
-      debugShowCheckedModeBanner: false,
-      routerConfig: SuperMobileNavigation.superMobileRouter,
-    );
-  }
+  runApp(const AuthApp());
 }

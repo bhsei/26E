@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:de_glitch/services/language_controller.dart';
+import 'package:de_glitch/l10n/app_localizations.dart';
 
 /// DēGlitch Profile & Settings screen.
 ///
-/// This screen provides the UI and callbacks for settings destinations. Connect
-/// the callbacks to real routes/services in the app shell. It does not perform
-/// authentication or modify device-level network settings by itself.
+/// IMPORTANT: pass [onLocaleChanged] from the app-level LocaleController.
+/// That lets Flutter rebuild every screen with the selected language and saves
+/// the choice across app restarts. A screen-local String change is not sufficient.
 class SuperMobileProfile extends StatefulWidget {
   const SuperMobileProfile({
     super.key,
@@ -14,13 +16,14 @@ class SuperMobileProfile extends StatefulWidget {
     this.planName = 'Premium',
     this.avatarAsset = 'assets/images/pic.jpeg',
     this.initialLanguage = 'English',
+    this.onLanguageChanged,
+    this.onLocaleChanged,
     this.onAccountInformation,
     this.onActivityPreferences,
     this.onNetworkProfiles,
     this.onSecurityPrivacy,
     this.onHelpSupport,
     this.onAbout,
-    this.onLanguageChanged,
     this.onLogout,
   });
 
@@ -28,15 +31,17 @@ class SuperMobileProfile extends StatefulWidget {
   final String email;
   final String planName;
   final String avatarAsset;
-  final String initialLanguage;
-
+  final String
+  initialLanguage; // Kept for source compatibility with the previous widget API.
+  final ValueChanged<String>?
+  onLanguageChanged; // Legacy callback; use onLocaleChanged for app-wide localization.
+  final Future<void> Function(Locale locale)? onLocaleChanged;
   final VoidCallback? onAccountInformation;
   final VoidCallback? onActivityPreferences;
   final VoidCallback? onNetworkProfiles;
   final VoidCallback? onSecurityPrivacy;
   final VoidCallback? onHelpSupport;
   final VoidCallback? onAbout;
-  final ValueChanged<String>? onLanguageChanged;
   final VoidCallback? onLogout;
 
   @override
@@ -51,14 +56,6 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
   static const Color _line = Color(0xFFDDEBFA);
   static const Color _red = Color(0xFFE64F5A);
 
-  late String _language;
-
-  @override
-  void initState() {
-    super.initState();
-    _language = widget.initialLanguage;
-  }
-
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
@@ -72,17 +69,9 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
       );
   }
 
-  void _openDestination(String title, VoidCallback? callback) {
-    if (callback != null) {
-      callback();
-    } else {
-      _showMessage('$title is not connected to a screen yet.');
-    }
-  }
-
-  Future<void> _chooseLanguage() async {
-    const languages = <String>['English', '简体中文', 'Krio', 'Russian', 'Français', 'Español'];
-    final selected = await showModalBottomSheet<String>(
+  Future<void> _chooseLanguage(AppLocalizations l) async {
+    final current = Localizations.localeOf(context);
+    final selected = await showModalBottomSheet<Locale>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -106,30 +95,38 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text(
-                'Choose language',
-                style: TextStyle(
+              Text(
+                l.chooseLanguage,
+                style: const TextStyle(
                   color: _deepBlue,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: 10),
-              ...languages.map(
-                (language) => ListTile(
+              ...LanguageController.supportedLocales.map((locale) {
+                final isSelected =
+                    LanguageController.localeTag(locale) ==
+                    LanguageController.localeTag(current);
+                return ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    language,
+                    LanguageController.languageLabel(locale),
                     style: const TextStyle(
                       color: _deepBlue,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  trailing: language == _language
+                  trailing: isSelected
                       ? const Icon(Icons.check_circle, color: _blue)
                       : null,
-                  onTap: () => Navigator.of(sheetContext).pop(language),
-                ),
+                  onTap: () => Navigator.of(sheetContext).pop(locale),
+                );
+              }),
+              const SizedBox(height: 6),
+              Text(
+                l.languageRestartNote,
+                style: const TextStyle(color: _mutedBlue, fontSize: 12),
               ),
             ],
           ),
@@ -138,31 +135,51 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
     );
 
     if (selected == null || !mounted) return;
-    setState(() => _language = selected);
-    widget.onLanguageChanged?.call(selected);
-    if (widget.onLanguageChanged == null) {
-      _showMessage('Language selection updated for this screen only.');
+    if (widget.onLocaleChanged == null) {
+      _showMessage(l.languageChangeNotConfigured);
+      return;
+    }
+
+    try {
+      await widget.onLocaleChanged!(selected);
+      widget.onLanguageChanged?.call(
+        LanguageController.languageLabel(selected),
+      );
+      // LocaleController updates the root locale immediately and persists it.
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _showMessage(AppLocalizations.of(context).languageSaved);
+        });
+      }
+    } catch (_) {
+      if (mounted) _showMessage(l.errorTryAgain);
     }
   }
 
-  Future<void> _confirmLogout() async {
+  void _navigate(VoidCallback? callback, String routeName) {
+    if (callback != null) {
+      callback();
+    } else {
+      context.goNamed(routeName);
+    }
+  }
+
+  Future<void> _confirmLogout(AppLocalizations l) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Log out?'),
-        content: const Text(
-          'Are you sure you want to log out of DēGlitch?',
-        ),
+        title: Text(l.logOutQuestion),
+        content: Text(l.logoutPrompt),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(foregroundColor: _red),
-            child: const Text('Log Out'),
+            child: Text(l.logOut),
           ),
         ],
       ),
@@ -172,12 +189,17 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
     if (widget.onLogout != null) {
       widget.onLogout!();
     } else {
-      _showMessage('Connect the Log Out action to your authentication flow.');
+      _showMessage(l.errorTryAgain);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final currentLanguage = LanguageController.languageLabel(
+      Localizations.localeOf(context),
+    );
+
     return Scaffold(
       backgroundColor: _page,
       appBar: AppBar(
@@ -185,15 +207,9 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: false,
-        /*leading: IconButton(
-          tooltip: 'Back',
-          onPressed: _isRunning ? _cancel : () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 19),
-          color: _deepBlue,
-        ),*/
-        title: const Text(
-          'Profile & Settings',
-          style: TextStyle(
+        title: Text(
+          l.profileAndSettings,
+          style: const TextStyle(
             color: _deepBlue,
             fontWeight: FontWeight.w800,
             fontSize: 18,
@@ -205,49 +221,63 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
           children: [
-            _buildProfileCard(),
+            _buildProfileCard(l),
             const SizedBox(height: 12),
             _SettingsRow(
               icon: Icons.person_outline_rounded,
-              title: 'Account Information',
-              onTap: () => context.goNamed('super-mobile-account-information'),
+              title: l.accountInformation,
+              onTap: () => _navigate(
+                widget.onAccountInformation,
+                'super-mobile-account-information',
+              ),
             ),
             _SettingsRow(
               icon: Icons.language_rounded,
-              title: 'Language',
-              trailingText: _language,
-              onTap: _chooseLanguage,
+              title: l.language,
+              trailingText: currentLanguage,
+              onTap: () => _chooseLanguage(l),
             ),
             _SettingsRow(
               icon: Icons.sports_esports_outlined,
-              title: 'Activity Preferences',
-              onTap: () => context.goNamed('super-mobile-activity-preferences'),
+              title: l.activityPreferences,
+              onTap: () => _navigate(
+                widget.onActivityPreferences,
+                'super-mobile-activity-preferences',
+              ),
             ),
             _SettingsRow(
               icon: Icons.settings_ethernet_rounded,
-              title: 'Network Profiles',
-              onTap: () => context.goNamed('super-mobile-network-profiles'),
+              title: l.networkProfiles,
+              onTap: () => _navigate(
+                widget.onNetworkProfiles,
+                'super-mobile-network-profiles',
+              ),
             ),
             _SettingsRow(
               icon: Icons.shield_outlined,
-              title: 'Security & Privacy',
-              onTap: () => context.goNamed('super-mobile-security-privacy'),
+              title: l.securityAndPrivacy,
+              onTap: () => _navigate(
+                widget.onSecurityPrivacy,
+                'super-mobile-security-privacy',
+              ),
             ),
             _SettingsRow(
               icon: Icons.help_outline_rounded,
-              title: 'Help & Support',
-              onTap: () => context.goNamed('super-mobile-help-support'),
+              title: l.helpAndSupport,
+              onTap: () =>
+                  _navigate(widget.onHelpSupport, 'super-mobile-help-support'),
             ),
             _SettingsRow(
               icon: Icons.info_outline_rounded,
-              title: 'About DēGlitch',
-              onTap: () => context.goNamed('super-mobile-about-deglitch'),
+              title: l.aboutDeGlitch,
+              onTap: () =>
+                  _navigate(widget.onAbout, 'super-mobile-about-deglitch'),
             ),
             const SizedBox(height: 18),
             SizedBox(
               height: 52,
               child: OutlinedButton(
-                onPressed: _confirmLogout,
+                onPressed: () => _confirmLogout(l),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _red,
                   backgroundColor: const Color(0xFFFFF9FA),
@@ -260,7 +290,7 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                child: const Text('Log Out'),
+                child: Text(l.logOut),
               ),
             ),
           ],
@@ -269,7 +299,7 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
     );
   }
 
-  Widget _buildProfileCard() {
+  Widget _buildProfileCard(AppLocalizations l) {
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
@@ -330,7 +360,10 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 11,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: _blue,
                     borderRadius: BorderRadius.circular(20),
@@ -338,7 +371,11 @@ class _SuperMobileProfileState extends State<SuperMobileProfile> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.verified_rounded, color: Colors.white, size: 13),
+                      const Icon(
+                        Icons.verified_rounded,
+                        color: Colors.white,
+                        size: 13,
+                      ),
                       const SizedBox(width: 5),
                       Text(
                         widget.planName,
@@ -367,7 +404,6 @@ class _SettingsRow extends StatelessWidget {
     required this.onTap,
     this.trailingText,
   });
-
   final IconData icon;
   final String title;
   final String? trailingText;
@@ -419,7 +455,11 @@ class _SettingsRow extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                 ],
-                const Icon(Icons.chevron_right_rounded, color: _mutedBlue, size: 19),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: _mutedBlue,
+                  size: 19,
+                ),
               ],
             ),
           ),

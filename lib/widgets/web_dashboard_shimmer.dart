@@ -16,105 +16,122 @@ class WebDashboardShimmer extends StatelessWidget {
       child: ListView(
         children: [
           const Gap(10),
-          Row(
-            children: [
-              ShimmerBox(
-                  height: 10,
-                  width: 60
-              ),
-            ],
-          ),
+          Row(children: [ShimmerBox(height: 10, width: 60)]),
           const Gap(5),
-          Row(
-            children: [
-              ShimmerBox(
-                  height: 10,
-                  width: 80
-              ),
-            ],
-          ),
+          Row(children: [ShimmerBox(height: 10, width: 80)]),
           const Gap(30),
           Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: [
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-              ]
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+            ],
           ),
           const Gap(10),
           Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: [
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-              ]
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+            ],
           ),
           const Gap(10),
           Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: [
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-              ]
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+            ],
           ),
           const Gap(10),
           Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: [
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-                ShimmerBox(
-                  height: 30,
-                  width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width / 4 : double.infinity,
-                ),
-              ]
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            children: [
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+              ShimmerBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width > 800
+                    ? MediaQuery.of(context).size.width / 4
+                    : double.infinity,
+              ),
+            ],
           ),
           const Gap(10),
-          ShimmerBox(height: 150, width: MediaQuery.of(context).size.width * 0.9,),
+          ShimmerBox(
+            height: 150,
+            width: MediaQuery.of(context).size.width * 0.9,
+          ),
           const Gap(20),
-          ShimmerBox(height: 150, width: MediaQuery.of(context).size.width * 0.9,),
+          ShimmerBox(
+            height: 150,
+            width: MediaQuery.of(context).size.width * 0.9,
+          ),
           const Gap(20),
-          ShimmerBox(height: 150, width: MediaQuery.of(context).size.width * 0.9,),
+          ShimmerBox(
+            height: 150,
+            width: MediaQuery.of(context).size.width * 0.9,
+          ),
         ],
       ),
     );

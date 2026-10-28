@@ -9,8 +9,6 @@ class SuperWebDashboard extends StatefulWidget {
 }
 
 class _SuperWebDashboardState extends State<SuperWebDashboard> {
-
-
   @override
   Widget build(BuildContext context) {
     return const WebDashboardShimmer();

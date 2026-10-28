@@ -64,7 +64,10 @@ class _SuperMobileDiagnosticsState extends State<SuperMobileDiagnostics> {
   static const Color _amber = Color(0xFFF0A52B);
 
   static const List<_DiagnosticItem> _items = [
-    _DiagnosticItem(DiagnosticCheckType.internetConnection, 'Internet Connection'),
+    _DiagnosticItem(
+      DiagnosticCheckType.internetConnection,
+      'Internet Connection',
+    ),
     _DiagnosticItem(DiagnosticCheckType.dns, 'DNS'),
     _DiagnosticItem(DiagnosticCheckType.packetLoss, 'Packet Loss Test'),
     _DiagnosticItem(DiagnosticCheckType.latency, 'Latency Test'),
@@ -79,9 +82,12 @@ class _SuperMobileDiagnosticsState extends State<SuperMobileDiagnostics> {
   int _runId = 0;
 
   int get _completedCount => _results.values
-      .where((result) => result.state == DiagnosticCheckState.passed ||
-          result.state == DiagnosticCheckState.failed ||
-          result.state == DiagnosticCheckState.unavailable)
+      .where(
+        (result) =>
+            result.state == DiagnosticCheckState.passed ||
+            result.state == DiagnosticCheckState.failed ||
+            result.state == DiagnosticCheckState.unavailable,
+      )
       .length;
 
   @override
@@ -263,20 +269,23 @@ class _SuperMobileDiagnosticsState extends State<SuperMobileDiagnostics> {
                   onPressed: _isRunning
                       ? _cancel
                       : (_cancelRequested || _completedCount > 0
-                          ? _runDiagnostics
-                          : () => Navigator.of(context).maybePop()),
+                            ? _runDiagnostics
+                            : () => Navigator.of(context).maybePop()),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: _blue,
                     backgroundColor: Colors.white.withValues(alpha: 0.35),
-                    side: const BorderSide(color: Color(0xFFCAE5FF), width: 1.5),
+                    side: const BorderSide(
+                      color: Color(0xFFCAE5FF),
+                      width: 1.5,
+                    ),
                     shape: const StadiumBorder(),
                   ),
                   child: Text(
                     _isRunning
                         ? 'Cancel'
                         : (_cancelRequested || _completedCount > 0
-                            ? 'Run Again'
-                            : 'Close'),
+                              ? 'Run Again'
+                              : 'Close'),
                     style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
@@ -461,7 +470,9 @@ class _SuperMobileDiagnosticsState extends State<SuperMobileDiagnostics> {
             child: Icon(
               icon,
               size: 13,
-              color: state == DiagnosticCheckState.pending ? _mutedBlue : Colors.white,
+              color: state == DiagnosticCheckState.pending
+                  ? _mutedBlue
+                  : Colors.white,
             ),
           ),
           const SizedBox(width: 10),
@@ -494,7 +505,9 @@ class _SuperMobileDiagnosticsState extends State<SuperMobileDiagnostics> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: state == DiagnosticCheckState.pending ? 0 : 0.10),
+              color: color.withValues(
+                alpha: state == DiagnosticCheckState.pending ? 0 : 0.10,
+              ),
               borderRadius: BorderRadius.circular(7),
             ),
             child: Text(

@@ -13,6 +13,7 @@ class ResponsiveLayout extends StatefulWidget {
   @override
   _ResponsiveLayoutState createState() => _ResponsiveLayoutState();
 }
+
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   Widget build(BuildContext context) {

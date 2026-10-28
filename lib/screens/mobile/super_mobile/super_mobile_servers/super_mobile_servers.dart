@@ -123,7 +123,9 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
 
   List<DeGlitchServer> get _visibleServers {
     if (_filterIndex == 2) {
-      return _servers.where((server) => _favorites.contains(server.id)).toList();
+      return _servers
+          .where((server) => _favorites.contains(server.id))
+          .toList();
     }
     if (_filterIndex == 1) return _servers;
     return _servers.where((server) => !server.recommended).toList();
@@ -293,7 +295,10 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
                   borderRadius: BorderRadius.circular(10),
                   onTap: () => setState(() => _filterIndex = index),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 3),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 11,
+                      horizontal: 3,
+                    ),
                     child: Center(
                       child: Text(
                         labels[index],
@@ -367,7 +372,10 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF10B981),
                       borderRadius: BorderRadius.circular(6),
@@ -389,10 +397,15 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
                   Expanded(child: _metric('${server.latencyMs} ms', 'Latency')),
                   _verticalDivider(),
                   Expanded(
-                    child: _metric('${server.packetLossPercent.toStringAsFixed(1)}%', 'Packet Loss'),
+                    child: _metric(
+                      '${server.packetLossPercent.toStringAsFixed(1)}%',
+                      'Packet Loss',
+                    ),
                   ),
                   _verticalDivider(),
-                  Expanded(child: _metric('${server.healthScore}', 'Health Score')),
+                  Expanded(
+                    child: _metric('${server.healthScore}', 'Health Score'),
+                  ),
                 ],
               ),
             ],
@@ -471,7 +484,9 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
               ),
               IconButton(
                 visualDensity: VisualDensity.compact,
-                tooltip: favorite ? 'Remove from favorites' : 'Add to favorites',
+                tooltip: favorite
+                    ? 'Remove from favorites'
+                    : 'Add to favorites',
                 onPressed: () {
                   setState(() {
                     if (favorite) {
@@ -622,9 +637,9 @@ class _SuperMobileServersState extends State<SuperMobileServers> {
   }
 
   Widget _verticalDivider() => Container(
-        height: 35,
-        width: 1,
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        color: _line,
-      );
+    height: 35,
+    width: 1,
+    margin: const EdgeInsets.symmetric(horizontal: 4),
+    color: _line,
+  );
 }

@@ -1,4 +1,4 @@
-
+import 'package:de_glitch/screens/mobile/mobile_onboarding/mobile_onboarding_screen.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_connection_history/super_mobile_connection_history.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_diagnostics/super_mobile_diagnostics.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_about_deglitch.dart';
@@ -7,20 +7,29 @@ import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_help_support.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_network_profiles.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_security_privacy.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:de_glitch/services/language_controller.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_home/super_mobile_home.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_more/super_mobile_more.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_profile.dart';
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_servers/super_mobile_servers.dart';
-
 import 'package:de_glitch/layout/super_mobile_layout/super_mobile_layout.dart';
+import '../../auth/auth_checker.dart';
+import '../../screens/mobile/mobile_auth/mobile_forgot_password_screen.dart';
+import '../../screens/mobile/mobile_auth/mobile_sign_in_screen.dart';
+import '../../screens/mobile/mobile_auth/mobile_sign_up_screen.dart';
 
 class SuperMobileNavigation {
-  SuperMobileNavigation._();
+  SuperMobileNavigation(this.languageController);
 
-  static const String initRoute = '/super-mobile-home';
+  final LanguageController languageController;
+
+  late final GoRouterAuthRefresh _authRefresh =
+  GoRouterAuthRefresh(FirebaseAuth.instance.authStateChanges());
+
+  static const String initRoute = AuthCheckerRoutes.entry;
 
   static final GlobalKey<NavigatorState> superMobileLayoutKey =
   GlobalKey<NavigatorState>(debugLabel: 'super-mobile-layout');
@@ -40,15 +49,103 @@ class SuperMobileNavigation {
   static final GlobalKey<NavigatorState> superMobileMoreKey =
   GlobalKey<NavigatorState>(debugLabel: 'super-mobile-more');
 
-  static final GoRouter superMobileRouter = GoRouter(
+  late final GoRouter superMobileRouter = GoRouter(
     navigatorKey: superMobileLayoutKey,
     initialLocation: initRoute,
+    refreshListenable: _authRefresh,
+    redirect: AuthRouterGuard.redirect,
+    errorBuilder: (context, state) => Scaffold(
+      backgroundColor: const Color(0xFFF4F9FF),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.route_outlined, size: 44, color: Color(0xFF0878F9)),
+              const SizedBox(height: 12),
+              const Text(
+                'This destination is not registered yet',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Path: ${state.uri.path}\n${state.error}',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 18),
+              FilledButton(
+                onPressed: () async {
+                  // If a role destination is missing, returning to the checker
+                  // would send the same role back to the same missing route.
+                  await FirebaseAuth.instance.signOut();
+                  if (context.mounted) {
+                    context.go(AuthCheckerRoutes.entry);
+                  }
+                },
+                child: const Text('Sign out and restart'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
     routes: [
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => AuthCheckerRoutes.entry,
+      ),
+      GoRoute(
+        path: AuthCheckerRoutes.entry,
+        name: 'auth-checker',
+        builder: (context, state) => const AuthChecker(),
+      ),
+      // Keep the earlier auth URLs working while screen code is being migrated.
+      GoRoute(
+        path: '/sign-in',
+        redirect: (context, state) => AuthCheckerRoutes.signIn,
+      ),
+      GoRoute(
+        path: '/sign-up',
+        redirect: (context, state) => AuthCheckerRoutes.signUp,
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        redirect: (context, state) => AuthCheckerRoutes.forgotPassword,
+      ),
+      // Public entry and account flows. The splash screen routes returning
+      // Firebase users to Home and new users through the three onboarding pages.
+
+      /*GoRoute(
+        path: '/mobile-splash',
+        name: 'mobile-splash',
+        builder: (context, state) => MobileSplashScreen(key: state.pageKey),
+      ),*/
+      GoRoute(
+        path: '/mobile-onboarding',
+        name: 'mobile-onboarding',
+        builder: (context, state) => MobileOnboardingScreen(key: state.pageKey),
+      ),
+      GoRoute(
+        path: '/mobile-sign-in',
+        name: 'mobile-sign-in',
+        builder: (context, state) => MobileSignInScreen(key: state.pageKey),
+      ),
+      GoRoute(
+        path: '/mobile-sign-up',
+        name: 'mobile-sign-up',
+        builder: (context, state) => MobileSignUpScreen(key: state.pageKey),
+      ),
+      GoRoute(
+        path: '/mobile-forgot-password',
+        name: 'mobile-forgot-password',
+        builder: (context, state) =>
+            MobileForgotPasswordScreen(key: state.pageKey),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return SuperMobileLayout(
-            superMobileNavigationShell: navigationShell,
-          );
+          return SuperMobileLayout(superMobileNavigationShell: navigationShell);
         },
         branches: [
           // 0. Home
@@ -61,29 +158,28 @@ class SuperMobileNavigation {
                 builder: (context, state) {
                   return SuperMobileHome(key: state.pageKey);
                 },
-                  routes: [
-                    GoRoute(
-                        path: 'super-mobile-connection-history',
-                        name: 'super-mobile-connection-history',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileConnectionHistory(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                routes: [
+                  GoRoute(
+                    path: 'super-mobile-connection-history',
+                    name: 'super-mobile-connection-history',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileConnectionHistory(key: state.pageKey),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                  ]
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -124,136 +220,137 @@ class SuperMobileNavigation {
                 path: '/super-mobile-profile',
                 name: 'super-mobile-profile',
                 builder: (context, state) {
-                  return SuperMobileProfile(key: state.pageKey);
+                  return SuperMobileProfile(
+                    key: state.pageKey,
+                    onLocaleChanged: languageController.setLocale,
+                  );
                 },
-                  routes: [
-                    GoRoute(
-                        path: 'super-mobile-account-information',
-                        name: 'super-mobile-account-information',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileAccountInformation(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                routes: [
+                  GoRoute(
+                    path: 'super-mobile-account-information',
+                    name: 'super-mobile-account-information',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileAccountInformation(
+                          key: state.pageKey,
+                        ),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                    GoRoute(
-                        path: 'super-mobile-activity-preferences',
-                        name: 'super-mobile-activity-preferences',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileActivityPreferences(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                        },
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'super-mobile-activity-preferences',
+                    name: 'super-mobile-activity-preferences',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileActivityPreferences(
+                          key: state.pageKey,
+                        ),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                    GoRoute(
-                        path: 'super-mobile-network-profiles',
-                        name: 'super-mobile-network-profiles',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileNetworkProfiles(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                        },
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'super-mobile-network-profiles',
+                    name: 'super-mobile-network-profiles',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileNetworkProfiles(key: state.pageKey),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                    GoRoute(
-                        path: 'super-mobile-security-privacy',
-                        name: 'super-mobile-security-privacy',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileSecurityPrivacy(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                        },
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'super-mobile-security-privacy',
+                    name: 'super-mobile-security-privacy',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileSecurityPrivacy(key: state.pageKey),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                    GoRoute(
-                        path: 'super-mobile-help-support',
-                        name: 'super-mobile-help-support',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileHelpSupport(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                        },
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'super-mobile-help-support',
+                    name: 'super-mobile-help-support',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileHelpSupport(key: state.pageKey),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                    GoRoute(
-                        path: 'super-mobile-about-deglitch',
-                        name: 'super-mobile-about-deglitch',
-                        pageBuilder: (context, state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: SuperMobileAboutDeGlitch(
-                              key: state.pageKey,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(-1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                        },
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'super-mobile-about-deglitch',
+                    name: 'super-mobile-about-deglitch',
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage<void>(
+                        key: state.pageKey,
+                        child: SuperMobileAboutDeGlitch(key: state.pageKey),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
                           );
-                        }
-                    ),
-                  ]
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -275,4 +372,10 @@ class SuperMobileNavigation {
       ),
     ],
   );
+
+  /// Release the router and Firebase auth-refresh subscription.
+  void dispose() {
+    superMobileRouter.dispose();
+    _authRefresh.dispose();
+  }
 }

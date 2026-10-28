@@ -1,7 +1,6 @@
 import 'package:de_glitch/screens/mobile/super_mobile/super_mobile_profile/super_mobile_settings_components.dart';
 import 'package:flutter/material.dart';
 
-
 @immutable
 class ActivityPreferencesData {
   const ActivityPreferencesData({
@@ -48,18 +47,55 @@ class SuperMobileActivityPreferences extends StatefulWidget {
   final Future<void> Function(ActivityPreferencesData data)? onSave;
 
   @override
-  State<SuperMobileActivityPreferences> createState() => _SuperMobileActivityPreferencesState();
+  State<SuperMobileActivityPreferences> createState() =>
+      _SuperMobileActivityPreferencesState();
 }
 
-class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPreferences> {
+class _SuperMobileActivityPreferencesState
+    extends State<SuperMobileActivityPreferences> {
   static const _options = <_ActivityOption>[
-    _ActivityOption('Gaming', 'Low latency · Low jitter', Icons.sports_esports_rounded, 'Prioritize responsive connections for online play.'),
-    _ActivityOption('Video Call', 'Stability · Low packet loss', Icons.video_call_rounded, 'Prefer consistent quality for meetings and calls.'),
-    _ActivityOption('Streaming', 'Bandwidth · Stability', Icons.play_circle_outline_rounded, 'Balance throughput and stable playback.'),
-    _ActivityOption('Studying', 'Stable · Low latency', Icons.menu_book_rounded, 'Support learning platforms and research sessions.'),
-    _ActivityOption('Development', 'Reliable connection', Icons.code_rounded, 'Favor reliable access to development tools.'),
-    _ActivityOption('Browsing', 'Balanced · Data efficient', Icons.public_rounded, 'Use a balanced profile for everyday browsing.'),
-    _ActivityOption('Travel', 'Roaming · Stability', Icons.flight_takeoff_rounded, 'Favor predictable connectivity while moving.'),
+    _ActivityOption(
+      'Gaming',
+      'Low latency · Low jitter',
+      Icons.sports_esports_rounded,
+      'Prioritize responsive connections for online play.',
+    ),
+    _ActivityOption(
+      'Video Call',
+      'Stability · Low packet loss',
+      Icons.video_call_rounded,
+      'Prefer consistent quality for meetings and calls.',
+    ),
+    _ActivityOption(
+      'Streaming',
+      'Bandwidth · Stability',
+      Icons.play_circle_outline_rounded,
+      'Balance throughput and stable playback.',
+    ),
+    _ActivityOption(
+      'Studying',
+      'Stable · Low latency',
+      Icons.menu_book_rounded,
+      'Support learning platforms and research sessions.',
+    ),
+    _ActivityOption(
+      'Development',
+      'Reliable connection',
+      Icons.code_rounded,
+      'Favor reliable access to development tools.',
+    ),
+    _ActivityOption(
+      'Browsing',
+      'Balanced · Data efficient',
+      Icons.public_rounded,
+      'Use a balanced profile for everyday browsing.',
+    ),
+    _ActivityOption(
+      'Travel',
+      'Roaming · Stability',
+      Icons.flight_takeoff_rounded,
+      'Favor predictable connectivity while moving.',
+    ),
   ];
 
   late String _activity;
@@ -72,7 +108,9 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
   @override
   void initState() {
     super.initState();
-    _activity = _options.any((o) => o.name == widget.initialActivity) ? widget.initialActivity : 'Browsing';
+    _activity = _options.any((o) => o.name == widget.initialActivity)
+        ? widget.initialActivity
+        : 'Browsing';
     _lowLatency = widget.initialPreferLowLatency;
     _stability = widget.initialPreferStability;
     _backgroundChecks = widget.initialAllowBackgroundChecks;
@@ -90,7 +128,13 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
     setState(() => _saving = true);
     try {
       await widget.onSave?.call(data);
-      if (mounted) dgShowMessage(context, widget.onSave == null ? 'Preferences ready. Connect the recommendation service to apply them.' : 'Activity preferences saved.');
+      if (mounted)
+        dgShowMessage(
+          context,
+          widget.onSave == null
+              ? 'Preferences ready. Connect the recommendation service to apply them.'
+              : 'Activity preferences saved.',
+        );
     } catch (error) {
       if (mounted) dgShowMessage(context, 'Could not save preferences: $error');
     } finally {
@@ -111,11 +155,30 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
               children: [
                 Icon(Icons.tune_rounded, color: DgColors.blue, size: 28),
                 SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Choose your activity', style: TextStyle(color: DgColors.deepBlue, fontSize: 16, fontWeight: FontWeight.w800)),
-                  SizedBox(height: 5),
-                  Text('Each profile expresses different connection priorities. DēGlitch can use these preferences when its recommendation service is connected.', style: TextStyle(color: DgColors.mutedBlue, fontSize: 12, height: 1.4)),
-                ])),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Choose your activity',
+                        style: TextStyle(
+                          color: DgColors.deepBlue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        'Each profile expresses different connection priorities. DēGlitch can use these preferences when its recommendation service is connected.',
+                        style: TextStyle(
+                          color: DgColors.mutedBlue,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -124,20 +187,59 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
           const DgSectionHeading('Connection priorities'),
           DgPanel(
             padding: const EdgeInsets.fromLTRB(14, 2, 14, 2),
-            child: Column(children: [
-              _PreferenceSwitch(icon: Icons.speed_rounded, title: 'Prefer low latency', subtitle: 'Give response time higher weight', value: _lowLatency, onChanged: (v) => setState(() => _lowLatency = v)),
-              const Divider(height: 1, color: DgColors.line),
-              _PreferenceSwitch(icon: Icons.shield_moon_outlined, title: 'Prefer stability', subtitle: 'Give consistency and low loss higher weight', value: _stability, onChanged: (v) => setState(() => _stability = v)),
-              const Divider(height: 1, color: DgColors.line),
-              _PreferenceSwitch(icon: Icons.auto_awesome_rounded, title: 'Adaptive recommendations', subtitle: 'Allow suggestions to reflect this profile', value: _adaptive, onChanged: (v) => setState(() => _adaptive = v)),
-              const Divider(height: 1, color: DgColors.line),
-              _PreferenceSwitch(icon: Icons.sync_rounded, title: 'Background checks', subtitle: 'Permit non-essential periodic checks', value: _backgroundChecks, onChanged: (v) => setState(() => _backgroundChecks = v)),
-            ]),
+            child: Column(
+              children: [
+                _PreferenceSwitch(
+                  icon: Icons.speed_rounded,
+                  title: 'Prefer low latency',
+                  subtitle: 'Give response time higher weight',
+                  value: _lowLatency,
+                  onChanged: (v) => setState(() => _lowLatency = v),
+                ),
+                const Divider(height: 1, color: DgColors.line),
+                _PreferenceSwitch(
+                  icon: Icons.shield_moon_outlined,
+                  title: 'Prefer stability',
+                  subtitle: 'Give consistency and low loss higher weight',
+                  value: _stability,
+                  onChanged: (v) => setState(() => _stability = v),
+                ),
+                const Divider(height: 1, color: DgColors.line),
+                _PreferenceSwitch(
+                  icon: Icons.auto_awesome_rounded,
+                  title: 'Adaptive recommendations',
+                  subtitle: 'Allow suggestions to reflect this profile',
+                  value: _adaptive,
+                  onChanged: (v) => setState(() => _adaptive = v),
+                ),
+                const Divider(height: 1, color: DgColors.line),
+                _PreferenceSwitch(
+                  icon: Icons.sync_rounded,
+                  title: 'Background checks',
+                  subtitle: 'Permit non-essential periodic checks',
+                  value: _backgroundChecks,
+                  onChanged: (v) => setState(() => _backgroundChecks = v),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 18),
-          DgPrimaryButton(label: 'Save preferences', icon: Icons.check_rounded, isLoading: _saving, onPressed: _save),
+          DgPrimaryButton(
+            label: 'Save preferences',
+            icon: Icons.check_rounded,
+            isLoading: _saving,
+            onPressed: _save,
+          ),
           const SizedBox(height: 8),
-          const Text('These controls update the screen state. Actual routing or monitoring behavior requires service integration.', textAlign: TextAlign.center, style: TextStyle(color: DgColors.mutedBlue, fontSize: 11, height: 1.35)),
+          const Text(
+            'These controls update the screen state. Actual routing or monitoring behavior requires service integration.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: DgColors.mutedBlue,
+              fontSize: 11,
+              height: 1.35,
+            ),
+          ),
         ],
       ),
     );
@@ -155,18 +257,72 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
           onTap: () => setState(() => _activity = option.name),
           child: Container(
             padding: const EdgeInsets.all(13),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), border: Border.all(color: selected ? DgColors.blue : DgColors.line, width: selected ? 1.4 : 1)),
-            child: Row(children: [
-              Container(width: 44, height: 44, decoration: BoxDecoration(color: selected ? DgColors.blue : DgColors.paleBlue, borderRadius: BorderRadius.circular(13)), child: Icon(option.icon, color: selected ? Colors.white : DgColors.blue, size: 23)),
-              const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(option.name, style: const TextStyle(color: DgColors.deepBlue, fontWeight: FontWeight.w800, fontSize: 14)),
-                const SizedBox(height: 3),
-                Text(option.subtitle, style: const TextStyle(color: DgColors.mutedBlue, fontSize: 12)),
-                if (selected) ...[const SizedBox(height: 5), Text(option.hint, style: const TextStyle(color: DgColors.deepBlue, fontSize: 11, height: 1.3))],
-              ])),
-              Icon(selected ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded, color: selected ? DgColors.blue : DgColors.mutedBlue, size: 22),
-            ]),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(17),
+              border: Border.all(
+                color: selected ? DgColors.blue : DgColors.line,
+                width: selected ? 1.4 : 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: selected ? DgColors.blue : DgColors.paleBlue,
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Icon(
+                    option.icon,
+                    color: selected ? Colors.white : DgColors.blue,
+                    size: 23,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        option.name,
+                        style: const TextStyle(
+                          color: DgColors.deepBlue,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        option.subtitle,
+                        style: const TextStyle(
+                          color: DgColors.mutedBlue,
+                          fontSize: 12,
+                        ),
+                      ),
+                      if (selected) ...[
+                        const SizedBox(height: 5),
+                        Text(
+                          option.hint,
+                          style: const TextStyle(
+                            color: DgColors.deepBlue,
+                            fontSize: 11,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Icon(
+                  selected
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  color: selected ? DgColors.blue : DgColors.mutedBlue,
+                  size: 22,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -175,7 +331,13 @@ class _SuperMobileActivityPreferencesState extends State<SuperMobileActivityPref
 }
 
 class _PreferenceSwitch extends StatelessWidget {
-  const _PreferenceSwitch({required this.icon, required this.title, required this.subtitle, required this.value, required this.onChanged});
+  const _PreferenceSwitch({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
   final IconData icon;
   final String title;
   final String subtitle;
@@ -184,12 +346,41 @@ class _PreferenceSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(children: [
-          Icon(icon, color: DgColors.blue, size: 23),
-          const SizedBox(width: 10),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(color: DgColors.deepBlue, fontSize: 13, fontWeight: FontWeight.w700)), const SizedBox(height: 2), Text(subtitle, style: const TextStyle(color: DgColors.mutedBlue, fontSize: 11, height: 1.25))])),
-          Switch.adaptive(value: value, onChanged: onChanged, activeColor: DgColors.blue),
-        ]),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: Row(
+      children: [
+        Icon(icon, color: DgColors.blue, size: 23),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: DgColors.deepBlue,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: DgColors.mutedBlue,
+                  fontSize: 11,
+                  height: 1.25,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch.adaptive(
+          value: value,
+          onChanged: onChanged,
+          activeColor: DgColors.blue,
+        ),
+      ],
+    ),
+  );
 }

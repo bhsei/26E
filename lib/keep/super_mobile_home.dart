@@ -11,7 +11,6 @@ class SuperMobileHome extends StatefulWidget {
 }
 
 class _SuperMobileHomeState extends State<SuperMobileHome> {
-
   bool isConnected = true;
   int selectedTab = 0;
 
@@ -41,191 +40,188 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF064184),
-            Color(0xFF00346F),
-          ],
+          colors: [Color(0xFF064184), Color(0xFF00346F)],
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-          body: Stack(
-            children: [
-              NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                    SliverAppBar(
-                      floating: true,
-                      pinned: true,
-                      snap: true,
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Color(0xFF064184),
-                      surfaceTintColor: Colors.transparent,
-                      title: Row(
-                        children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: background,
-                                width: 2,
+        body: Stack(
+          children: [
+            NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverAppBar(
+                  floating: true,
+                  pinned: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Color(0xFF064184),
+                  surfaceTintColor: Colors.transparent,
+                  title: Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: background, width: 2),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/images/pro.jpg'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            MobileHeaderText(text: 'Elijah Fullah'),
+                            const Gap(5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 10,
                               ),
-                              image: const DecorationImage(
-                                image: AssetImage('assets/images/pro.jpg'),
-                                fit: BoxFit.cover,
+                              decoration: BoxDecoration(
+                                color: premium,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.verified,
+                                    color: primary,
+                                    size: 16,
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    'Premium',
+                                    style: TextStyle(
+                                      color: primary,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.notifications_outlined,
+                          color: premium,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Gap(10),
+
+                    // Connection card, Quick Access and statistics
+                    SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.9,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // Connection card
+                          Positioned(
+                            top: 0,
+                            left: 15,
+                            right: 15,
+                            child: _buildConnectionCard(),
+                          ),
+
+                          // Quick Access panel
+                          Positioned(
+                            top: 280,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(
+                                15,
+                                65,
+                                15,
+                                20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.96),
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(24),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Gap(10),
+                                  _buildQuickAccessTitle(),
+                                  const Gap(20),
+                                  _buildQuickAccess(),
+                                ],
                               ),
                             ),
                           ),
-                          const Gap(10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                MobileHeaderText(text: 'Elijah Fullah'),
-                                const Gap(5),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 5,
-                                    horizontal: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: premium,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.verified,
-                                        color: primary,
-                                        size: 16,
-                                      ),
-                                      const Gap(5),
-                                      Text(
-                                        'Premium',
-                                        style: TextStyle(
-                                          color: primary,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
+
+                          // Statistics card above both panels
+                          Positioned(
+                            top: 265,
+                            left: 30,
+                            right: 30,
+                            child: Material(
+                              elevation: 3,
+                              color: const Color(0xFFFBFDFF),
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: const Color(0xFFE2F2FF),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-
-                            },
-                            icon: Icon(
-                              Icons.notifications_outlined,
-                              color: premium,
+                                child: const Row(
+                                  children: [
+                                    Expanded(
+                                      child: StatItem(
+                                        value: '42 ms',
+                                        label: 'Latency',
+                                      ),
+                                    ),
+                                    StatDivider(),
+                                    Expanded(
+                                      child: StatItem(
+                                        value: '0.3%',
+                                        label: 'Packet Loss',
+                                      ),
+                                    ),
+                                    StatDivider(),
+                                    Expanded(
+                                      child: StatItem(
+                                        value: '91',
+                                        label: 'Health Score',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ],
-                body: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const Gap(10),
-
-                      // Connection card, Quick Access and statistics
-                      SizedBox(
-                        height: MediaQuery.sizeOf(context).height * 0.9,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            // Connection card
-                            Positioned(
-                              top: 0,
-                              left: 15,
-                              right: 15,
-                              child: _buildConnectionCard(),
-                            ),
-
-                            // Quick Access panel
-                            Positioned(
-                              top: 280,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(15, 65, 15, 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.96),
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(24),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Gap(10),
-                                    _buildQuickAccessTitle(),
-                                    const Gap(20),
-                                    _buildQuickAccess(),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // Statistics card above both panels
-                            Positioned(
-                              top: 265,
-                              left: 30,
-                              right: 30,
-                              child: Material(
-                                elevation: 3,
-                                color: const Color(0xFFFBFDFF),
-                                borderRadius: BorderRadius.circular(14),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: const Color(0xFFE2F2FF),
-                                    ),
-                                  ),
-                                  child: const Row(
-                                    children: [
-                                      Expanded(
-                                        child: StatItem(
-                                          value: '42 ms',
-                                          label: 'Latency',
-                                        ),
-                                      ),
-                                      StatDivider(),
-                                      Expanded(
-                                        child: StatItem(
-                                          value: '0.3%',
-                                          label: 'Packet Loss',
-                                        ),
-                                      ),
-                                      StatDivider(),
-                                      Expanded(
-                                        child: StatItem(
-                                          value: '91',
-                                          label: 'Health Score',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
-            ],
-          )
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -240,9 +236,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.97),
           borderRadius: BorderRadius.circular(19),
-          border: Border.all(
-            color: const Color(0xFFE1F1FF),
-          ),
+          border: Border.all(color: const Color(0xFFE1F1FF)),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF3A94E8).withValues(alpha: 0.08),
@@ -289,10 +283,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF149AFF),
-                          Color(0xFF005CE5),
-                        ],
+                        colors: [Color(0xFF149AFF), Color(0xFF005CE5)],
                       ),
                       border: Border.all(
                         color: const Color(0xFF6AD4FF),
@@ -331,12 +322,8 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  isConnected
-                      ? Icons.check_circle
-                      : Icons.cancel,
-                  color: isConnected
-                      ? green
-                      : Colors.redAccent,
+                  isConnected ? Icons.check_circle : Icons.cancel,
+                  color: isConnected ? green : Colors.redAccent,
                   size: 19,
                 ),
                 const SizedBox(width: 6),
@@ -358,10 +345,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    '🇸🇬',
-                    style: TextStyle(fontSize: 17),
-                  ),
+                  const Text('🇸🇬', style: TextStyle(fontSize: 17)),
                   const SizedBox(width: 6),
                   Text(
                     isConnected ? 'Singapore-03' : 'No server selected',
@@ -414,9 +398,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE0F0FF),
-        ),
+        border: Border.all(color: const Color(0xFFE0F0FF)),
       ),
       child: Column(
         children: [
@@ -448,13 +430,9 @@ class _SuperMobileHomeState extends State<SuperMobileHome> {
   Widget _tileDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Divider(
-        height: 1,
-        color: const Color(0xFFEAF3FC),
-      ),
+      child: Divider(height: 1, color: const Color(0xFFEAF3FC)),
     );
   }
-
 }
 
 // Reusable statistics widget
@@ -462,19 +440,12 @@ class StatItem extends StatelessWidget {
   final String value;
   final String label;
 
-  const StatItem({
-    super.key,
-    required this.value,
-    required this.label,
-  });
+  const StatItem({super.key, required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 2,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
       child: Column(
         children: [
           Text(
@@ -508,11 +479,7 @@ class StatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 1,
-      color: const Color(0xFFD9ECFC),
-    );
+    return Container(height: 40, width: 1, color: const Color(0xFFD9ECFC));
   }
 }
 
@@ -539,10 +506,7 @@ class QuickAccessTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(13),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 11,
-            vertical: 9,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
           child: Row(
             children: [
               Container(
@@ -550,21 +514,12 @@ class QuickAccessTile extends StatelessWidget {
                 width: 38,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFE6F5FF),
-                      Color(0xFFD3EDFF),
-                    ],
+                    colors: [Color(0xFFE6F5FF), Color(0xFFD3EDFF)],
                   ),
                   borderRadius: BorderRadius.circular(11),
-                  border: Border.all(
-                    color: const Color(0xFFD4EBFF),
-                  ),
+                  border: Border.all(color: const Color(0xFFD4EBFF)),
                 ),
-                child: Icon(
-                  icon,
-                  color: primaryBlue,
-                  size: 21,
-                ),
+                child: Icon(icon, color: primaryBlue, size: 21),
               ),
               const SizedBox(width: 12),
               Expanded(

@@ -237,10 +237,8 @@ class _SuperMobileMoreState extends State<SuperMobileMore> {
             icon: Icons.alt_route_rounded,
             title: 'Recommend',
             subtitle: 'Find a better route',
-            onTap: () => _open(
-              'Server Recommendation',
-              widget.onServerRecommendation,
-            ),
+            onTap: () =>
+                _open('Server Recommendation', widget.onServerRecommendation),
           ),
         ),
         const SizedBox(width: 10),
@@ -249,7 +247,8 @@ class _SuperMobileMoreState extends State<SuperMobileMore> {
             icon: Icons.history_rounded,
             title: 'History',
             subtitle: 'Past sessions',
-            onTap: () => _open('Connection History', widget.onConnectionHistory),
+            onTap: () =>
+                _open('Connection History', widget.onConnectionHistory),
           ),
         ),
       ],

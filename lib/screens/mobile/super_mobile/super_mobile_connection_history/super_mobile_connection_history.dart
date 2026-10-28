@@ -35,6 +35,7 @@ class ConnectionHistoryEntry {
 }
 
 enum _HistoryFilter { all, successful, issues }
+
 enum _HistoryRange { allTime, today, sevenDays, thirtyDays }
 
 /// Connection History screen for DēGlitch.
@@ -102,20 +103,22 @@ class _SuperMobileConnectionHistoryState
         _HistoryFilter.all => true,
         _HistoryFilter.successful =>
           session.status == ConnectionHistoryStatus.successful,
-        _HistoryFilter.issues => session.status == ConnectionHistoryStatus.issue,
+        _HistoryFilter.issues =>
+          session.status == ConnectionHistoryStatus.issue,
       };
 
       final matchesRange = switch (_range) {
         _HistoryRange.allTime => true,
         _HistoryRange.today => !session.startedAt.isBefore(startOfToday),
-        _HistoryRange.sevenDays =>
-          !session.startedAt.isBefore(now.subtract(const Duration(days: 7))),
-        _HistoryRange.thirtyDays =>
-          !session.startedAt.isBefore(now.subtract(const Duration(days: 30))),
+        _HistoryRange.sevenDays => !session.startedAt.isBefore(
+          now.subtract(const Duration(days: 7)),
+        ),
+        _HistoryRange.thirtyDays => !session.startedAt.isBefore(
+          now.subtract(const Duration(days: 30)),
+        ),
       };
       return matchesFilter && matchesRange;
-    }).toList()
-      ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    }).toList()..sort((a, b) => b.startedAt.compareTo(a.startedAt));
   }
 
   int get _averageHealth {
@@ -126,9 +129,9 @@ class _SuperMobileConnectionHistoryState
   }
 
   Duration get _totalDuration => _sessions.fold<Duration>(
-        Duration.zero,
-        (total, session) => total + session.duration,
-      );
+    Duration.zero,
+    (total, session) => total + session.duration,
+  );
 
   Future<void> _clearHistory() async {
     if (_sessions.isEmpty || _isClearing) return;
@@ -387,7 +390,9 @@ class _SuperMobileConnectionHistoryState
               _verticalDivider(),
               Expanded(
                 child: _SummaryValue(
-                  value: _sessions.isEmpty ? '—' : _formatDuration(_totalDuration),
+                  value: _sessions.isEmpty
+                      ? '—'
+                      : _formatDuration(_totalDuration),
                   label: 'Total time',
                   icon: Icons.schedule_rounded,
                   color: _mutedBlue,
@@ -401,11 +406,11 @@ class _SuperMobileConnectionHistoryState
   }
 
   Widget _verticalDivider() => Container(
-        width: 1,
-        height: 53,
-        margin: const EdgeInsets.symmetric(horizontal: 3),
-        color: _line,
-      );
+    width: 1,
+    height: 53,
+    margin: const EdgeInsets.symmetric(horizontal: 3),
+    color: _line,
+  );
 
   Widget _buildOutcomeFilters() {
     return Container(
@@ -464,7 +469,10 @@ class _SuperMobileConnectionHistoryState
               borderRadius: BorderRadius.circular(20),
               onTap: () => setState(() => _range = range),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: selected ? const Color(0xFFDCEEFF) : Colors.white,
                   border: Border.all(color: selected ? _blue : _line),
@@ -514,7 +522,10 @@ class _SuperMobileConnectionHistoryState
                       color: const Color(0xFFEAF5FF),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Text(session.flag, style: const TextStyle(fontSize: 23)),
+                    child: Text(
+                      session.flag,
+                      style: const TextStyle(fontSize: 23),
+                    ),
                   ),
                   const SizedBox(width: 11),
                   Expanded(
@@ -545,7 +556,10 @@ class _SuperMobileConnectionHistoryState
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withOpacity(.11),
                       borderRadius: BorderRadius.circular(20),
@@ -607,7 +621,11 @@ class _SuperMobileConnectionHistoryState
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.warning_amber_rounded, color: _red, size: 17),
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: _red,
+                        size: 17,
+                      ),
                       const SizedBox(width: 7),
                       Expanded(
                         child: Text(
@@ -652,7 +670,9 @@ class _SuperMobileConnectionHistoryState
           ),
           const SizedBox(height: 15),
           Text(
-            hasAnySessions ? 'No matching sessions' : 'No connection history yet',
+            hasAnySessions
+                ? 'No matching sessions'
+                : 'No connection history yet',
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: _deepBlue,
@@ -700,8 +720,18 @@ class _SuperMobileConnectionHistoryState
     if (day == today) return 'Today';
     if (day == today.subtract(const Duration(days: 1))) return 'Yesterday';
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}';
   }
@@ -872,10 +902,7 @@ class _CompactMetric extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Color(0xFF7093B9),
-                  fontSize: 10,
-                ),
+                style: const TextStyle(color: Color(0xFF7093B9), fontSize: 10),
               ),
             ),
           ],
@@ -1009,16 +1036,23 @@ class _SessionDetailsSheet extends StatelessWidget {
               const SizedBox(height: 8),
               _DetailRow(
                 label: 'Started',
-                value: '${_formatDate(session.startedAt)} · ${_clock(session.startedAt)}',
+                value:
+                    '${_formatDate(session.startedAt)} · ${_clock(session.startedAt)}',
+              ),
+              _DetailRow(label: 'Duration', value: _duration(session.duration)),
+              _DetailRow(label: 'Activity profile', value: session.activity),
+              _DetailRow(
+                label: 'Connection health',
+                value: '${session.healthScore}/100',
               ),
               _DetailRow(
-                label: 'Duration',
-                value: _duration(session.duration),
+                label: 'Data received',
+                value: _formatBytes(session.bytesReceived),
               ),
-              _DetailRow(label: 'Activity profile', value: session.activity),
-              _DetailRow(label: 'Connection health', value: '${session.healthScore}/100'),
-              _DetailRow(label: 'Data received', value: _formatBytes(session.bytesReceived)),
-              _DetailRow(label: 'Data sent', value: _formatBytes(session.bytesSent)),
+              _DetailRow(
+                label: 'Data sent',
+                value: _formatBytes(session.bytesSent),
+              ),
               if (session.note != null) ...[
                 const SizedBox(height: 12),
                 Container(
@@ -1075,8 +1109,18 @@ class _SessionDetailsSheet extends StatelessWidget {
 
   static String _formatDate(DateTime date) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -1087,8 +1131,10 @@ class _SessionDetailsSheet extends StatelessWidget {
   }
 
   static String _duration(Duration duration) {
-    if (duration.inDays > 0) return '${duration.inDays}d ${duration.inHours % 24}h';
-    if (duration.inHours > 0) return '${duration.inHours}h ${duration.inMinutes % 60}m';
+    if (duration.inDays > 0)
+      return '${duration.inDays}d ${duration.inHours % 24}h';
+    if (duration.inHours > 0)
+      return '${duration.inHours}h ${duration.inMinutes % 60}m';
     if (duration.inMinutes > 0) return '${duration.inMinutes}m';
     return '${duration.inSeconds}s';
   }

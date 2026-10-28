@@ -4,21 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../constants/colors/colors.dart';
 
 class LogoutElevatedButtonText extends StatelessWidget {
-  const LogoutElevatedButtonText({
-    super.key,
-  });
+  const LogoutElevatedButtonText({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText(
-        'Ok',
-        style: GoogleFonts.montserrat(
-          textStyle: const TextStyle(
-              color: background,
-              fontSize: 16,
-              fontWeight: FontWeight.w900
-          ),
-        )
+      'Ok',
+      style: GoogleFonts.montserrat(
+        textStyle: const TextStyle(
+          color: background,
+          fontSize: 16,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
     );
   }
 }

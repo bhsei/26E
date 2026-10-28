@@ -93,11 +93,7 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
       _errorText = null;
       _showSuggestions = false;
       _messages.add(
-        _AssistantMessage(
-          text: text,
-          fromUser: true,
-          time: DateTime.now(),
-        ),
+        _AssistantMessage(text: text, fromUser: true, time: DateTime.now()),
       );
       _isTyping = true;
     });
@@ -148,7 +144,9 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
           'with your activity profile. The server scores shown in this preview '
           'are not live measurements.';
     }
-    if (q.contains('diagnostic') || q.contains('test') || q.contains('packet')) {
+    if (q.contains('diagnostic') ||
+        q.contains('test') ||
+        q.contains('packet')) {
       return 'Diagnostics can check internet reachability, DNS resolution and '
           'available latency or packet-loss measurements. Some values depend '
           'on the active tunnel and endpoint telemetry. Open Diagnostics to '
@@ -178,7 +176,9 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
     if (q.contains('server') || q.contains('recommend') || q.contains('best')) {
       return widget.onOpenServers == null ? null : 'View servers';
     }
-    if (q.contains('slow') || q.contains('latency') || q.contains('diagnostic')) {
+    if (q.contains('slow') ||
+        q.contains('latency') ||
+        q.contains('diagnostic')) {
       return widget.onOpenDiagnostics == null ? null : 'Open diagnostics';
     }
     return null;
@@ -215,8 +215,7 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
         ..clear()
         ..add(
           _AssistantMessage(
-            text:
-                'Hi! I’m DēGlitch Assistant. What would you like help with?',
+            text: 'Hi! I’m DēGlitch Assistant. What would you like help with?',
             fromUser: false,
             time: DateTime.now(),
           ),
@@ -292,12 +291,15 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
                 controller: _scrollController,
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 itemCount:
-                    _messages.length + (_isTyping ? 1 : 0) + (_showSuggestions ? 1 : 0),
+                    _messages.length +
+                    (_isTyping ? 1 : 0) +
+                    (_showSuggestions ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (_showSuggestions && index == _messages.length) {
                     return _QuickPrompts(onSelected: _send);
                   }
-                  if (_isTyping && index == _messages.length + (_showSuggestions ? 1 : 0)) {
+                  if (_isTyping &&
+                      index == _messages.length + (_showSuggestions ? 1 : 0)) {
                     return const _TypingBubble();
                   }
                   final message = _messages[index];
@@ -314,16 +316,24 @@ class _SuperMobileAiAssistanceState extends State<SuperMobileAiAssistance> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.redAccent, size: 18),
+                    const Icon(
+                      Icons.info_outline,
+                      color: Colors.redAccent,
+                      size: 18,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _errorText!,
-                        style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                     TextButton(
-                      onPressed: () => _send(_messages.lastWhere((m) => m.fromUser).text),
+                      onPressed: () =>
+                          _send(_messages.lastWhere((m) => m.fromUser).text),
                       child: const Text('Retry'),
                     ),
                   ],
@@ -368,7 +378,11 @@ class _ModeBanner extends StatelessWidget {
               color: const Color(0xFFE4F2FF),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.auto_awesome_rounded, color: blue, size: 20),
+            child: const Icon(
+              Icons.auto_awesome_rounded,
+              color: blue,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 10),
           const Expanded(
@@ -443,7 +457,11 @@ class _QuickPrompts extends StatelessWidget {
                 .map(
                   (prompt) => ActionChip(
                     label: Text(prompt),
-                    avatar: const Icon(Icons.auto_awesome, size: 15, color: blue),
+                    avatar: const Icon(
+                      Icons.auto_awesome,
+                      size: 15,
+                      color: blue,
+                    ),
                     backgroundColor: Colors.white,
                     side: const BorderSide(color: Color(0xFFDCEBFA)),
                     shape: RoundedRectangleBorder(
@@ -495,7 +513,9 @@ class _MessageBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
@@ -510,16 +530,25 @@ class _MessageBubble extends StatelessWidget {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
             ),
             const SizedBox(width: 8),
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: isUser ? blue : assistantBubble,
                     borderRadius: BorderRadius.only(
@@ -555,8 +584,13 @@ class _MessageBubble extends StatelessWidget {
                       side: const BorderSide(color: line),
                       backgroundColor: Colors.white,
                       visualDensity: VisualDensity.compact,
-                      textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      textStyle: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
                   ),
                 ],
@@ -599,14 +633,20 @@ class _TypingBubble extends StatelessWidget {
           CircleAvatar(
             radius: 17,
             backgroundColor: Color(0xFF0878F9),
-            child: Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 17),
+            child: Icon(
+              Icons.auto_awesome_rounded,
+              color: Colors.white,
+              size: 17,
+            ),
           ),
           SizedBox(width: 8),
           DecoratedBox(
             decoration: BoxDecoration(
               color: Color(0xFFE8F3FF),
               borderRadius: BorderRadius.all(Radius.circular(18)),
-              border: Border.fromBorderSide(BorderSide(color: Color(0xFFDCEBFA))),
+              border: Border.fromBorderSide(
+                BorderSide(color: Color(0xFFDCEBFA)),
+              ),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
@@ -615,11 +655,7 @@ class _TypingBubble extends StatelessWidget {
                 height: 16,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _TypingDot(),
-                    _TypingDot(),
-                    _TypingDot(),
-                  ],
+                  children: [_TypingDot(), _TypingDot(), _TypingDot()],
                 ),
               ),
             ),
@@ -635,13 +671,13 @@ class _TypingDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: 7,
-        height: 7,
-        decoration: const BoxDecoration(
-          color: Color(0xFF7093B9),
-          shape: BoxShape.circle,
-        ),
-      );
+    width: 7,
+    height: 7,
+    decoration: const BoxDecoration(
+      color: Color(0xFF7093B9),
+      shape: BoxShape.circle,
+    ),
+  );
 }
 
 class _Composer extends StatelessWidget {
@@ -690,10 +726,16 @@ class _Composer extends StatelessWidget {
                 onSubmitted: onSend,
                 decoration: InputDecoration(
                   hintText: 'Ask DēGlitch Assistant…',
-                  hintStyle: const TextStyle(color: Color(0xFF8AA6C6), fontSize: 13),
+                  hintStyle: const TextStyle(
+                    color: Color(0xFF8AA6C6),
+                    fontSize: 13,
+                  ),
                   filled: true,
                   fillColor: const Color(0xFFF3F8FD),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 13,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24),
                     borderSide: const BorderSide(color: line),

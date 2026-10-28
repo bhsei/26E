@@ -15,7 +15,8 @@ class SuperMobileHome extends StatefulWidget {
   State<SuperMobileHome> createState() => _SuperMobileHomeState();
 }
 
-class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingObserver {
+class _SuperMobileHomeState extends State<SuperMobileHome>
+    with WidgetsBindingObserver {
   final WireGuardService _wireGuard = WireGuardService();
   StreamSubscription<wg.TunnelStatus>? _statusSubscription;
   Timer? _statusPollTimer;
@@ -39,7 +40,8 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
   // A running interface alone does not prove the peer is reachable. A reported
   // handshake, received tunnel traffic, or a successful internet probe does.
   bool get isConnected =>
-      isTunnelActive && (hasHandshake || receivedBytes > 0 || internetReachable);
+      isTunnelActive &&
+      (hasHandshake || receivedBytes > 0 || internetReachable);
 
   String get connectionLabel {
     if (isBusy) return 'Connecting...';
@@ -47,9 +49,10 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
     if (!isTunnelActive) {
       return hasConfig ? 'Disconnected' : 'Import a configuration';
     }
-    if (isConnected) return internetReachable && !hasHandshake
-        ? 'Connected — internet verified'
-        : 'Connected';
+    if (isConnected)
+      return internetReachable && !hasHandshake
+          ? 'Connected — internet verified'
+          : 'Connected';
     return 'Tunnel active — checking server response';
   }
 
@@ -65,7 +68,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _statusSubscription = _wireGuard.statusStream.listen(
-          (status) {
+      (status) {
         if (status.name == WireGuardService.tunnelName) {
           _applyTunnelStatus(status);
         }
@@ -173,7 +176,9 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
     if (!isTunnelActive || _probeInProgress) return;
     final now = DateTime.now();
     final last = _lastConnectivityProbe;
-    if (!force && last != null && now.difference(last) < const Duration(seconds: 8)) {
+    if (!force &&
+        last != null &&
+        now.difference(last) < const Duration(seconds: 8)) {
       return;
     }
     _lastConnectivityProbe = now;
@@ -185,9 +190,12 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
           .getUrl(Uri.parse('https://www.gstatic.com/generate_204'))
           .timeout(const Duration(seconds: 5));
       request.followRedirects = false;
-      final response = await request.close().timeout(const Duration(seconds: 5));
+      final response = await request.close().timeout(
+        const Duration(seconds: 5),
+      );
       await response.drain<void>();
-      reachable = response.statusCode == 204 ||
+      reachable =
+          response.statusCode == 204 ||
           (response.statusCode >= 200 && response.statusCode < 400);
     } catch (_) {
       // Do not expose raw network errors or treat a failed probe as connected.
@@ -214,7 +222,9 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
       _showMessage('Configuration imported securely.');
     } catch (error) {
       if (mounted) {
-        _showMessage('Could not import configuration: ${_friendlyError(error)}');
+        _showMessage(
+          'Could not import configuration: ${_friendlyError(error)}',
+        );
       }
     }
   }
@@ -230,7 +240,8 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
         await _refreshTunnelStatus();
         if (mounted) _showMessage('Disconnect requested.');
       } catch (error) {
-        if (mounted) _showMessage('Disconnect failed: ${_friendlyError(error)}');
+        if (mounted)
+          _showMessage('Disconnect failed: ${_friendlyError(error)}');
       } finally {
         if (mounted) setState(() => isBusy = false);
         await _refreshTunnelStatus();
@@ -273,7 +284,9 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
           children: [
             ListTile(
               leading: const Icon(Icons.file_open_outlined),
-              title: Text(hasConfig ? 'Replace configuration' : 'Import configuration'),
+              title: Text(
+                hasConfig ? 'Replace configuration' : 'Import configuration',
+              ),
               subtitle: const Text('Select a .conf file stored on this device'),
               onTap: () {
                 Navigator.of(sheetContext).pop();
@@ -282,9 +295,16 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
             ),
             if (hasConfig)
               ListTile(
-                leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                leading: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                ),
                 title: const Text('Remove saved configuration'),
-                subtitle: Text(isTunnelActive ? 'Disconnect before removing' : 'Delete the locally saved profile'),
+                subtitle: Text(
+                  isTunnelActive
+                      ? 'Disconnect before removing'
+                      : 'Delete the locally saved profile',
+                ),
                 enabled: !isTunnelActive && !isBusy,
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
@@ -301,7 +321,10 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
                     });
                     _showMessage('Saved configuration removed.');
                   } catch (error) {
-                    if (mounted) _showMessage('Could not remove config: ${_friendlyError(error)}');
+                    if (mounted)
+                      _showMessage(
+                        'Could not remove config: ${_friendlyError(error)}',
+                      );
                   }
                 },
               ),
@@ -320,7 +343,8 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
   String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KiB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MiB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MiB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GiB';
   }
 
@@ -354,191 +378,190 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF064184),
-            Color(0xFF00346F),
-          ],
+          colors: [Color(0xFF064184), Color(0xFF00346F)],
         ),
       ),
       child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Stack(
-            children: [
-              NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Color(0xFF064184),
-                    surfaceTintColor: Colors.transparent,
-                    title: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: background,
-                              width: 2,
-                            ),
-                            image: const DecorationImage(
-                              image: AssetImage('assets/images/pic.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const Gap(10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              MobileHeaderText(text: 'Elijah Fullah'),
-                              const Gap(5),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 5,
-                                  horizontal: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: premium,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.verified,
-                                      color: primary,
-                                      size: 16,
-                                    ),
-                                    const Gap(5),
-                                    Text(
-                                      'Premium',
-                                      style: TextStyle(
-                                        color: primary,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-
-                          },
-                          icon: Icon(
-                            Icons.notifications_outlined,
-                            color: premium,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                body: SingleChildScrollView(
-                  child: Column(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverAppBar(
+                  floating: true,
+                  pinned: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Color(0xFF064184),
+                  surfaceTintColor: Colors.transparent,
+                  title: Row(
                     children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: background, width: 2),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/images/pic.jpeg'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                       const Gap(10),
-
-                      // Connection card, Quick Access and statistics
-                      SizedBox(
-                        height: MediaQuery.sizeOf(context).height * 0.9,
-                        child: Stack(
-                          clipBehavior: Clip.none,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Connection card
-                            Positioned(
-                              top: 0,
-                              left: 15,
-                              right: 15,
-                              child: _buildConnectionCard(),
-                            ),
-
-                            // Quick Access panel
-                            Positioned(
-                              top: 280,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(15, 65, 15, 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.96),
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(24),
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Gap(10),
-                                    _buildQuickAccessTitle(),
-                                    const Gap(20),
-                                    _buildQuickAccess(),
-                                  ],
-                                ),
+                            MobileHeaderText(text: 'Elijah Fullah'),
+                            const Gap(5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 10,
                               ),
-                            ),
-
-                            // Statistics card above both panels
-                            Positioned(
-                              top: 265,
-                              left: 30,
-                              right: 30,
-                              child: Material(
-                                elevation: 3,
-                                color: const Color(0xFFFBFDFF),
-                                borderRadius: BorderRadius.circular(14),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: const Color(0xFFE2F2FF),
+                              decoration: BoxDecoration(
+                                color: premium,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.verified,
+                                    color: primary,
+                                    size: 16,
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    'Premium',
+                                    style: TextStyle(
+                                      color: primary,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: StatItem(
-                                          value: _formatBytes(receivedBytes),
-                                          label: 'Received',
-                                        ),
-                                      ),
-                                      const StatDivider(),
-                                      Expanded(
-                                        child: StatItem(
-                                          value: _formatBytes(sentBytes),
-                                          label: 'Sent',
-                                        ),
-                                      ),
-                                      const StatDivider(),
-                                      Expanded(
-                                        child: StatItem(
-                                          value: _formatHandshake(handshakeTimestamp),
-                                          label: 'Last handshake',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.notifications_outlined,
+                          color: premium,
+                        ),
+                      ),
                     ],
                   ),
                 ),
+              ],
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Gap(10),
+
+                    // Connection card, Quick Access and statistics
+                    SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.9,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // Connection card
+                          Positioned(
+                            top: 0,
+                            left: 15,
+                            right: 15,
+                            child: _buildConnectionCard(),
+                          ),
+
+                          // Quick Access panel
+                          Positioned(
+                            top: 280,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(
+                                15,
+                                65,
+                                15,
+                                20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.96),
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(24),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Gap(10),
+                                  _buildQuickAccessTitle(),
+                                  const Gap(20),
+                                  _buildQuickAccess(),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Statistics card above both panels
+                          Positioned(
+                            top: 265,
+                            left: 30,
+                            right: 30,
+                            child: Material(
+                              elevation: 3,
+                              color: const Color(0xFFFBFDFF),
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: const Color(0xFFE2F2FF),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: StatItem(
+                                        value: _formatBytes(receivedBytes),
+                                        label: 'Received',
+                                      ),
+                                    ),
+                                    const StatDivider(),
+                                    Expanded(
+                                      child: StatItem(
+                                        value: _formatBytes(sentBytes),
+                                        label: 'Sent',
+                                      ),
+                                    ),
+                                    const StatDivider(),
+                                    Expanded(
+                                      child: StatItem(
+                                        value: _formatHandshake(
+                                          handshakeTimestamp,
+                                        ),
+                                        label: 'Last handshake',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          )
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -553,9 +576,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.97),
           borderRadius: BorderRadius.circular(19),
-          border: Border.all(
-            color: const Color(0xFFE1F1FF),
-          ),
+          border: Border.all(color: const Color(0xFFE1F1FF)),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF3A94E8).withValues(alpha: 0.08),
@@ -602,10 +623,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF149AFF),
-                          Color(0xFF005CE5),
-                        ],
+                        colors: [Color(0xFF149AFF), Color(0xFF005CE5)],
                       ),
                       border: Border.all(
                         color: const Color(0xFF6AD4FF),
@@ -627,18 +645,20 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
                         onTap: isBusy ? null : _handlePowerButton,
                         child: isBusy
                             ? const SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
                             : const Icon(
-                          Icons.power_settings_new,
-                          color: Colors.white,
-                          size: 37,
-                        ),
+                                Icons.power_settings_new,
+                                color: Colors.white,
+                                size: 37,
+                              ),
                       ),
                     ),
                   ),
@@ -696,7 +716,11 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(Icons.edit_outlined, size: 13, color: Color(0xFF477DB4)),
+                  const Icon(
+                    Icons.edit_outlined,
+                    size: 13,
+                    color: Color(0xFF477DB4),
+                  ),
                 ],
               ),
             ),
@@ -740,9 +764,7 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE0F0FF),
-        ),
+        border: Border.all(color: const Color(0xFFE0F0FF)),
       ),
       child: Column(
         children: [
@@ -774,13 +796,9 @@ class _SuperMobileHomeState extends State<SuperMobileHome> with WidgetsBindingOb
   Widget _tileDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Divider(
-        height: 1,
-        color: const Color(0xFFEAF3FC),
-      ),
+      child: Divider(height: 1, color: const Color(0xFFEAF3FC)),
     );
   }
-
 }
 
 // Reusable statistics widget
@@ -788,19 +806,12 @@ class StatItem extends StatelessWidget {
   final String value;
   final String label;
 
-  const StatItem({
-    super.key,
-    required this.value,
-    required this.label,
-  });
+  const StatItem({super.key, required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 2,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
       child: Column(
         children: [
           Text(
@@ -834,11 +845,7 @@ class StatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 1,
-      color: const Color(0xFFD9ECFC),
-    );
+    return Container(height: 40, width: 1, color: const Color(0xFFD9ECFC));
   }
 }
 
@@ -865,10 +872,7 @@ class QuickAccessTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(13),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 11,
-            vertical: 9,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
           child: Row(
             children: [
               Container(
@@ -876,21 +880,12 @@ class QuickAccessTile extends StatelessWidget {
                 width: 38,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFE6F5FF),
-                      Color(0xFFD3EDFF),
-                    ],
+                    colors: [Color(0xFFE6F5FF), Color(0xFFD3EDFF)],
                   ),
                   borderRadius: BorderRadius.circular(11),
-                  border: Border.all(
-                    color: const Color(0xFFD4EBFF),
-                  ),
+                  border: Border.all(color: const Color(0xFFD4EBFF)),
                 ),
-                child: Icon(
-                  icon,
-                  color: primaryBlue,
-                  size: 21,
-                ),
+                child: Icon(icon, color: primaryBlue, size: 21),
               ),
               const SizedBox(width: 12),
               Expanded(

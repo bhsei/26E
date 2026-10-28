@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
 class Palette {
-  static const MaterialColor primary = MaterialColor(
-    0xff4CAF50,
-    <int, Color>{
-      50: Color(0xffE8F5E9),  // 10%
-      100: Color(0xffC8E6C9), // 20%
-      200: Color(0xffA5D6A7), // 30%
-      300: Color(0xff81C784), // 40%
-      400: Color(0xff66BB6A), // 50%
-      500: Color(0xff4CAF50), // 60%
-      600: Color(0xff43A047), // 70%
-      700: Color(0xff388E3C), // 80%
-      800: Color(0xff2E7D32), // 90%
-      900: Color(0xff1B5E20), // 100%
-    },
-  );
+  static const MaterialColor primary = MaterialColor(0xff4CAF50, <int, Color>{
+    50: Color(0xffE8F5E9), // 10%
+    100: Color(0xffC8E6C9), // 20%
+    200: Color(0xffA5D6A7), // 30%
+    300: Color(0xff81C784), // 40%
+    400: Color(0xff66BB6A), // 50%
+    500: Color(0xff4CAF50), // 60%
+    600: Color(0xff43A047), // 70%
+    700: Color(0xff388E3C), // 80%
+    800: Color(0xff2E7D32), // 90%
+    900: Color(0xff1B5E20), // 100%
+  });
 }
 
 Color primary = const Color(0xFF232F69);

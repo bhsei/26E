@@ -5,24 +5,21 @@ import '../../constants/colors/colors.dart';
 
 class MobileHeaderText extends StatelessWidget {
   final String text;
-  const MobileHeaderText({
-    super.key,
-    required this.text
-  });
+  const MobileHeaderText({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText(
-        text,
-        overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.montserrat(
-          textStyle: TextStyle(
-              overflow: TextOverflow.ellipsis,
-              color: background,
-              fontSize: 14,
-              fontWeight: FontWeight.bold
-          ),
-        )
+      text,
+      overflow: TextOverflow.ellipsis,
+      style: GoogleFonts.montserrat(
+        textStyle: TextStyle(
+          overflow: TextOverflow.ellipsis,
+          color: background,
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

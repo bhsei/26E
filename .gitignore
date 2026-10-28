@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android generated build files
+/android/build/
+/android/.gradle/
+
+# Local Firebase configuration (keep out of Git unless intentionally shared)
+/android/app/google-services.json

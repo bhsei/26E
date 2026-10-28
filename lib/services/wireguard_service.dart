@@ -10,7 +10,7 @@ import 'package:flutter_wireguard/flutter_wireguard.dart' as wg;
 /// embedded in source code, or committed to version control.
 class WireGuardService {
   WireGuardService({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+    : _storage = storage ?? const FlutterSecureStorage();
 
   static const String tunnelName = 'deglitch';
   static const String _configKey = 'deglitch.wireguard.config.v1';
@@ -67,13 +67,51 @@ class WireGuardService {
     bool has(RegExp pattern) => pattern.hasMatch(config);
 
     final valid =
-        has(RegExp(r'^\s*\[Interface\]\s*$', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*\[Peer\]\s*$', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*PrivateKey\s*=\s*\S+', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*Address\s*=\s*\S+', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*PublicKey\s*=\s*\S+', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*Endpoint\s*=\s*\S+', multiLine: true, caseSensitive: false)) &&
-            has(RegExp(r'^\s*AllowedIPs\s*=\s*\S+', multiLine: true, caseSensitive: false));
+        has(
+          RegExp(
+            r'^\s*\[Interface\]\s*$',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        ) &&
+        has(
+          RegExp(r'^\s*\[Peer\]\s*$', multiLine: true, caseSensitive: false),
+        ) &&
+        has(
+          RegExp(
+            r'^\s*PrivateKey\s*=\s*\S+',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        ) &&
+        has(
+          RegExp(
+            r'^\s*Address\s*=\s*\S+',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        ) &&
+        has(
+          RegExp(
+            r'^\s*PublicKey\s*=\s*\S+',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        ) &&
+        has(
+          RegExp(
+            r'^\s*Endpoint\s*=\s*\S+',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        ) &&
+        has(
+          RegExp(
+            r'^\s*AllowedIPs\s*=\s*\S+',
+            multiLine: true,
+            caseSensitive: false,
+          ),
+        );
 
     if (!valid) {
       throw const FormatException(
@@ -86,12 +124,16 @@ class WireGuardService {
     final peerStart = config.indexOf('[Peer]');
     if (peerStart < 0) return null;
     final peerSection = config.substring(peerStart);
-    final match = RegExp(r'^\s*#\s*([A-Z]{2}-[A-Z0-9#-]+)\s*$', multiLine: true)
-        .firstMatch(peerSection);
+    final match = RegExp(
+      r'^\s*#\s*([A-Z]{2}-[A-Z0-9#-]+)\s*$',
+      multiLine: true,
+    ).firstMatch(peerSection);
     if (match != null) return match.group(1);
 
-    final endpoint = RegExp(r'^\s*Endpoint\s*=\s*(.+)$', multiLine: true)
-        .firstMatch(peerSection)?.group(1)?.trim();
+    final endpoint = RegExp(
+      r'^\s*Endpoint\s*=\s*(.+)$',
+      multiLine: true,
+    ).firstMatch(peerSection)?.group(1)?.trim();
     if (endpoint == null || endpoint.isEmpty) return null;
     return endpoint;
   }

@@ -1,0 +1,49 @@
+// Integration example for the existing DeGlitch app root.
+// Merge these properties into your current MaterialApp.router; do not replace
+// your existing routes, theme, title, Firebase setup, or other app settings.
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:de_glitch/l10n/app_localizations.dart';
+import 'package:de_glitch/services/language_controller.dart';
+
+/// This widget shows the root-side wiring. Pass in the ONE controller and the
+/// existing GoRouter instance. Keep [router] stable; don't recreate it inside
+/// AnimatedBuilder's builder callback.
+class LocaleAwareMaterialApp extends StatelessWidget {
+  const LocaleAwareMaterialApp({
+    super.key,
+    required this.languageController,
+    required this.router,
+  });
+
+  final LanguageController languageController;
+  final GoRouter router;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: languageController,
+      builder: (context, _) => MaterialApp.router(
+        routerConfig: router,
+        locale: languageController.locale,
+        // The six locales exposed in the Profile language picker.
+        supportedLocales: LanguageController.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        // Keep your existing MaterialApp properties here:
+        // title, theme, darkTheme, themeMode, builder, etc.
+      ),
+    );
+  }
+}
+
+// In the existing GoRoute that builds SuperMobileProfile, pass the very same
+// LanguageController instance used by LocaleAwareMaterialApp:
+//
+// builder: (context, state) => SuperMobileProfile(
+//   ...keep all existing arguments...
+//   onLocaleChanged: languageController.setLocale,
+// ),
+//
+// Ensure `languageController` is in scope where the router's route is built.
+// If the router lives in a class, add it as a constructor parameter/field.

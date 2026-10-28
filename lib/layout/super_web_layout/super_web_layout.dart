@@ -16,6 +16,7 @@ class SuperWebLayout extends StatefulWidget {
   @override
   _SuperWebLayoutState createState() => _SuperWebLayoutState();
 }
+
 class _SuperWebLayoutState extends State<SuperWebLayout> {
   bool isExpanded = true;
   int selectedIndex = 0;
@@ -33,12 +34,13 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Animate(
           effects: [
-            FadeEffect(duration: NumDurationExtensions(900).milliseconds, curve: Curves.easeInOut),
+            FadeEffect(
+              duration: NumDurationExtensions(900).milliseconds,
+              curve: Curves.easeInOut,
+            ),
           ],
           child: Container(
             width: MediaQuery.of(context).size.width * 0.4,
@@ -55,55 +57,64 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
                 children: [
                   Column(
                     children: [
-                      Heading3(text: 'Logout Alert').animate()
-                          .fadeIn(duration: NumDurationExtensions(600).milliseconds)
+                      Heading3(text: 'Logout Alert')
+                          .animate()
+                          .fadeIn(
+                            duration: NumDurationExtensions(600).milliseconds,
+                          )
                           .slide(),
                       const Gap(10),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.005,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        decoration: BoxDecoration(
-                          color: newBlue,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ).animate()
-                          .fadeIn(duration: NumDurationExtensions(800).milliseconds)
+                            height: MediaQuery.of(context).size.height * 0.005,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration: BoxDecoration(
+                              color: newBlue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          )
+                          .animate()
+                          .fadeIn(
+                            duration: NumDurationExtensions(800).milliseconds,
+                          )
                           .slide(),
                     ],
                   ),
-                  Text('Sign in required after signing out.',
-                      style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                        color: newBlue,
-                        fontSize: 16
-                    ),)).animate()
-                      .fadeIn(duration: NumDurationExtensions(1000).milliseconds)
+                  Text(
+                        'Sign in required after signing out.',
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(color: newBlue, fontSize: 16),
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(
+                        duration: NumDurationExtensions(1000).milliseconds,
+                      )
                       .slide(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          'Cancel',
-                          style: GoogleFonts.lato(
-                            textStyle: TextStyle(
-                              fontSize: 14,
-                              color: newBlue,
-                              fontWeight: FontWeight.w700,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: GoogleFonts.lato(
+                                textStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: newBlue,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      WebElevatedLogoutButton(
-                          onTap: (){},
-                          color: red
+                          WebElevatedLogoutButton(onTap: () {}, color: red),
+                        ],
                       )
-                    ],
-                  ).animate()
-                      .fadeIn(duration: NumDurationExtensions(1200).milliseconds)
+                      .animate()
+                      .fadeIn(
+                        duration: NumDurationExtensions(1200).milliseconds,
+                      )
                       .slide(),
                 ],
               ),
@@ -113,6 +124,7 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
       ),
     );
   }
+
   Widget buildListTile(int index, IconData icon, String text) {
     final isSelected = selectedIndex == index;
     final isHovered = hoveredIndex == index;
@@ -148,11 +160,7 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (text.isNotEmpty) const Gap(10),
-                  Icon(
-                    icon,
-                    size: 20,
-                    color: isActive ? newBlue : primary,
-                  ),
+                  Icon(icon, size: 20, color: isActive ? newBlue : primary),
                   if (text.isNotEmpty) ...[
                     const SizedBox(width: 10),
                     Expanded(
@@ -177,47 +185,45 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
       ),
     );
   }
+
   Widget buildListTileLogout(IconData icon, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: InkWell(
-          onTap: () {
-            showDialogMessage(context);
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (text.isNotEmpty) const Gap(10),
-                  Icon(
-                    icon,
-                    size: 20,
-                    color: red,
-                  ),
-                  if (text.isNotEmpty) ...[
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        text,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            color: red,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+        onTap: () {
+          showDialogMessage(context);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (text.isNotEmpty) const Gap(10),
+              Icon(icon, size: 20, color: red),
+              if (text.isNotEmpty) ...[
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    text,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                        color: red,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )
-                  ]
-                ]
-            ),
-          )
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
+
   IconData getIcon(int index) {
     switch (index) {
       case 0:
@@ -234,6 +240,7 @@ class _SuperWebLayoutState extends State<SuperWebLayout> {
         return Icons.error;
     }
   }
+
   String getTitle(int index) {
     switch (index) {
       case 0:

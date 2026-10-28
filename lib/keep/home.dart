@@ -68,11 +68,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE7F5FF),
-              Color(0xFFFFFFFF),
-              Color(0xFFF0F8FF),
-            ],
+            colors: [Color(0xFFE7F5FF), Color(0xFFFFFFFF), Color(0xFFF0F8FF)],
           ),
         ),
         child: SafeArea(
@@ -112,14 +108,9 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF064184),
-            Color(0xFF00346F),
-          ],
+          colors: [Color(0xFF064184), Color(0xFF00346F)],
         ),
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(28),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
       ),
       child: Row(
         children: [
@@ -129,18 +120,11 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFFBCE5FF),
-                width: 2,
-              ),
+              border: Border.all(color: const Color(0xFFBCE5FF), width: 2),
             ),
             child: const CircleAvatar(
               backgroundColor: Color(0xFFDCEEFF),
-              child: Icon(
-                Icons.person,
-                color: navy,
-                size: 29,
-              ),
+              child: Icon(Icons.person, color: navy, size: 29),
             ),
           ),
           const SizedBox(width: 11),
@@ -184,9 +168,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.12),
               shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.4),
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
@@ -213,9 +195,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.97),
           borderRadius: BorderRadius.circular(19),
-          border: Border.all(
-            color: const Color(0xFFE1F1FF),
-          ),
+          border: Border.all(color: const Color(0xFFE1F1FF)),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFF3A94E8).withValues(alpha: 0.08),
@@ -262,10 +242,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFF149AFF),
-                          Color(0xFF005CE5),
-                        ],
+                        colors: [Color(0xFF149AFF), Color(0xFF005CE5)],
                       ),
                       border: Border.all(
                         color: const Color(0xFF6AD4FF),
@@ -302,9 +279,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
                       color: const Color(0xFFF7FBFF),
                       shape: const CircleBorder(),
                       child: IconButton(
-                        onPressed: () => _showMessage(
-                          'Choose your VPN server',
-                        ),
+                        onPressed: () => _showMessage('Choose your VPN server'),
                         icon: const Icon(
                           Icons.chevron_right,
                           color: primaryBlue,
@@ -322,12 +297,8 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  isConnected
-                      ? Icons.check_circle
-                      : Icons.cancel,
-                  color: isConnected
-                      ? green
-                      : Colors.redAccent,
+                  isConnected ? Icons.check_circle : Icons.cancel,
+                  color: isConnected ? green : Colors.redAccent,
                   size: 19,
                 ),
                 const SizedBox(width: 6),
@@ -349,10 +320,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    '🇸🇬',
-                    style: TextStyle(fontSize: 17),
-                  ),
+                  const Text('🇸🇬', style: TextStyle(fontSize: 17)),
                   const SizedBox(width: 6),
                   Text(
                     isConnected ? 'Singapore-03' : 'No server selected',
@@ -372,31 +340,20 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFFFBFDFF),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: const Color(0xFFE2F2FF),
-                ),
+                border: Border.all(color: const Color(0xFFE2F2FF)),
               ),
               child: Row(
                 children: const [
                   Expanded(
-                    child: StatItem(
-                      value: '42 ms',
-                      label: 'Latency',
-                    ),
+                    child: StatItem(value: '42 ms', label: 'Latency'),
                   ),
                   StatDivider(),
                   Expanded(
-                    child: StatItem(
-                      value: '0.3%',
-                      label: 'Packet Loss',
-                    ),
+                    child: StatItem(value: '0.3%', label: 'Packet Loss'),
                   ),
                   StatDivider(),
                   Expanded(
-                    child: StatItem(
-                      value: '91',
-                      label: 'Health Score',
-                    ),
+                    child: StatItem(value: '91', label: 'Health Score'),
                   ),
                 ],
               ),
@@ -430,9 +387,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFE0F0FF),
-        ),
+        border: Border.all(color: const Color(0xFFE0F0FF)),
       ),
       child: Column(
         children: [
@@ -464,10 +419,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
   Widget _tileDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Divider(
-        height: 1,
-        color: const Color(0xFFEAF3FC),
-      ),
+      child: Divider(height: 1, color: const Color(0xFFEAF3FC)),
     );
   }
 
@@ -484,11 +436,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: const Border(
-          top: BorderSide(
-            color: Color(0xFFE5F1FC),
-          ),
-        ),
+        border: const Border(top: BorderSide(color: Color(0xFFE5F1FC))),
         boxShadow: [
           BoxShadow(
             color: navy.withValues(alpha: 0.04),
@@ -500,10 +448,7 @@ class _VpnHomeScreenState extends State<VpnHomeScreen> {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.only(
-            top: 7,
-            bottom: 5,
-          ),
+          padding: const EdgeInsets.only(top: 7, bottom: 5),
           child: Row(
             children: List.generate(items.length, (index) {
               final isSelected = selectedTab == index;
@@ -573,19 +518,12 @@ class StatItem extends StatelessWidget {
   final String value;
   final String label;
 
-  const StatItem({
-    super.key,
-    required this.value,
-    required this.label,
-  });
+  const StatItem({super.key, required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 2,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
       child: Column(
         children: [
           Text(
@@ -619,11 +557,7 @@ class StatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 1,
-      color: const Color(0xFFD9ECFC),
-    );
+    return Container(height: 40, width: 1, color: const Color(0xFFD9ECFC));
   }
 }
 
@@ -650,10 +584,7 @@ class QuickAccessTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(13),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 11,
-            vertical: 9,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
           child: Row(
             children: [
               Container(
@@ -661,21 +592,12 @@ class QuickAccessTile extends StatelessWidget {
                 width: 38,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFE6F5FF),
-                      Color(0xFFD3EDFF),
-                    ],
+                    colors: [Color(0xFFE6F5FF), Color(0xFFD3EDFF)],
                   ),
                   borderRadius: BorderRadius.circular(11),
-                  border: Border.all(
-                    color: const Color(0xFFD4EBFF),
-                  ),
+                  border: Border.all(color: const Color(0xFFD4EBFF)),
                 ),
-                child: Icon(
-                  icon,
-                  color: primaryBlue,
-                  size: 21,
-                ),
+                child: Icon(icon, color: primaryBlue, size: 21),
               ),
               const SizedBox(width: 12),
               Expanded(
