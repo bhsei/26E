@@ -1,5 +1,5 @@
 ---
-title: "DēGlitch Software Requirements Specification"
+Title: "DēGlitch Software Requirements Specification"
 ---
 
 *Context-Aware Adaptive Connectivity | Version 1.4*
