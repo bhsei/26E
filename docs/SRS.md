@@ -1,11 +1,5 @@
 ---
 title: "DēGlitch Software Requirements Specification"
-geometry: margin=0.68in
-fontsize: 9pt
-linkcolor: blue
-toc: false
-toc-depth: 3
-numbersections: false
 ---
 
 *Context-Aware Adaptive Connectivity | Version 1.4*
